@@ -5,7 +5,7 @@ import logging
 import textwrap
 from pathlib import Path
 
-from pylib import log
+from util.pylib import log
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
 
     in_paths = sorted(args.openai_dir.glob("*"))
     for in_path in in_paths:
-        with open(in_path) as f:
+        with in_path.open() as f:
             lines = f.readlines()
 
         # Find the JSON buried in the text
@@ -30,7 +30,8 @@ def main():
         # Missing JSON
         if beg == -1 or end == -1:
             missing += 1
-            logging.error(f"Missing JSON: {in_path.name}")
+            msg = f"Missing JSON: {in_path.name}"
+            logging.error(msg)
 
             if args.show_missing_json:
                 print("".join(lines))
@@ -49,7 +50,8 @@ def main():
         # Bad JSON
         except json.JSONDecodeError as err:
             bad_json += 1
-            logging.error(f"Bad     JSON: {in_path.name}")
+            msg = f"Bad     JSON: {in_path.name}"
+            logging.exception(msg)
 
             if args.show_bad_json:
                 print(err)
@@ -58,13 +60,14 @@ def main():
 
         # Output what we can
         out_path = args.clean_dir / in_path.name
-        with open(out_path, "w") as f:
+        with out_path.open("w") as f:
             f.write(lines)
 
-    logging.info(
+    msg = (
         f"Count: {len(in_paths)}, Bad JSON: {bad_json}, "
         f"Missing JSON: {missing}, Total errors: {bad_json + missing}"
     )
+    logging.info(msg)
 
     log.finished()
 

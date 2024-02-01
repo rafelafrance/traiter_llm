@@ -12,11 +12,13 @@ test:
 install: venv
 	source $(VENV)/bin/activate
 	$(PIP_INSTALL) -U pip setuptools wheel
+	$(PIP_INSTALL) git+https://github.com/rafelafrance/common_utils.git@main#egg=common_utils
 	$(PIP_INSTALL) .
 
 dev: venv
 	source $(VENV)/bin/activate
 	$(PIP_INSTALL) -U pip setuptools wheel
+	$(PIP_INSTALL) -e ../../misc/common_utils
 	$(PIP_INSTALL) -e .[dev]
 	pre-commit install
 

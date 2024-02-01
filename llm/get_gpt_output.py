@@ -6,15 +6,15 @@ import textwrap
 from pathlib import Path
 
 import openai
-from pylib import log
 from tqdm import tqdm
+from util.pylib import log
 
 
 def main():
     log.started()
     args = parse_args()
 
-    with open(args.key_file) as f:
+    with args.key_file.open() as f:
         keys = json.load(f)
     openai.api_key = keys["key"]
 
@@ -41,10 +41,11 @@ def main():
             missed += 1
             continue
 
-        with open(path, "w") as f:
+        with path.open("w") as f:
             f.write(answer)
 
-    logging.info(f"Missed {missed} labels")
+    msg = f"Missed {missed} labels"
+    logging.info(msg)
 
     log.finished()
 
@@ -55,7 +56,7 @@ def get_labels(text_dir) -> dict[str, str]:
     paths = sorted(text_dir.glob("*"))
 
     for path in paths:
-        with open(path) as f:
+        with path.open() as f:
             labels[path.stem] = f.read()
 
     return labels
