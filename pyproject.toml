@@ -28,6 +28,11 @@ get-gpt-output = "llm.get_gpt_output:main"
 [tool.setuptools]
 py-modules = []
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["llm"]
+namespaces = false
+
 [tool.ruff]
 target-version = "py311"
 
